@@ -1,0 +1,12 @@
+const KEY="thrinex-taskflow-tasks";let tasks=JSON.parse(localStorage.getItem(KEY)||"[]"),filter="all";
+const input=document.getElementById("taskInput"),list=document.getElementById("taskList"),empty=document.getElementById("emptyState"),count=document.getElementById("taskCount");
+function save(){localStorage.setItem(KEY,JSON.stringify(tasks))}
+function add(){const text=input.value.trim();if(!text)return;tasks.unshift({id:Date.now().toString(),text,completed:false,editing:false});save();input.value="";render();input.focus()}
+function visible(){return filter==="active"?tasks.filter(t=>!t.completed):filter==="completed"?tasks.filter(t=>t.completed):tasks}
+function render(){list.innerHTML="";visible().forEach(t=>{const li=document.createElement("li");li.className="task"+(t.completed?" done":"");li.dataset.id=t.id;li.innerHTML=`<button class="check" data-action="toggle" aria-label="Complete"></button>${t.editing?`<input class="edit-input" value="${t.text.replaceAll('"',"&quot;")}">`:`<div class="task-text"></div>`}<div class="actions">${t.editing?`<button data-action="save">✓</button>`:`<button data-action="edit">✎</button>`}<button class="delete" data-action="delete">×</button></div>`;if(!t.editing)li.querySelector(".task-text").textContent=t.text;list.appendChild(li)});empty.hidden=visible().length>0;count.textContent=tasks.length;document.querySelectorAll(".filter").forEach(b=>b.classList.toggle("active",b.dataset.filter===filter))}
+document.getElementById("addTask").onclick=add;input.onkeydown=e=>{if(e.key==="Enter")add()};
+document.getElementById("filters").onclick=e=>{const b=e.target.closest(".filter");if(b){filter=b.dataset.filter;render()}};
+document.getElementById("clearCompleted").onclick=()=>{tasks=tasks.filter(t=>!t.completed);save();render()};
+list.addEventListener("click",e=>{const b=e.target.closest("[data-action]"),li=e.target.closest(".task");if(!b||!li)return;const t=tasks.find(x=>x.id===li.dataset.id);if(!t)return;if(b.dataset.action==="toggle")t.completed=!t.completed;if(b.dataset.action==="delete")tasks=tasks.filter(x=>x!==t);if(b.dataset.action==="edit")t.editing=true;if(b.dataset.action==="save"){t.text=li.querySelector(".edit-input").value.trim()||t.text;t.editing=false}save();render()});
+list.addEventListener("keydown",e=>{if(e.key==="Enter"&&e.target.classList.contains("edit-input"))e.target.closest(".task").querySelector('[data-action="save"]').click()});
+render();
