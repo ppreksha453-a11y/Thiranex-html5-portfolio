@@ -1,36 +1,96 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TaskFlow - To-Do Manager</title>
-<link rel="stylesheet" href="style.css">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Weather Dashboard | Async JS & REST APIs</title>
+<link rel="stylesheet" href="style.css" />
 </head>
 <body>
-<main class="app">
-<header class="header">
-<div><p class="eyebrow">TASK MANAGEMENT</p><h1>TaskFlow</h1><p class="subtitle">Organize your day, one task at a time.</p></div>
-<div class="stats"><strong id="taskCount">0</strong><span>Tasks</span></div>
-</header>
 
-<section class="composer">
-<input id="taskInput" type="text" placeholder="What needs to be done?" maxlength="120" autocomplete="off">
-<button id="addTask" type="button">Add Task</button>
-</section>
+  <div class="app">
+    <header class="app-header">
+      <h1>🌤️ Weather Dashboard</h1>
+      <p class="subtitle">Real-time weather via the Fetch API, async/await &amp; a public REST API</p>
+    </header>
 
-<section class="toolbar">
-<div class="filters" id="filters">
-<button class="filter active" data-filter="all">All</button>
-<button class="filter" data-filter="active">Active</button>
-<button class="filter" data-filter="completed">Completed</button>
-</div>
-<button id="clearCompleted" class="clear-btn" type="button">Clear completed</button>
-</section>
+    <form id="searchForm" class="search-form">
+      <input
+        type="text"
+        id="cityInput"
+        placeholder="Search a city (e.g. London, Tokyo, New York)"
+        autocomplete="off"
+        required
+      />
+      <button type="submit" id="searchBtn">Search</button>
+      <button type="button" id="locateBtn" title="Use my location">📍</button>
+    </form>
 
-<ul id="taskList" class="task-list" aria-live="polite"></ul>
-<div id="emptyState" class="empty"><div class="empty-icon">✓</div><h2>No tasks here</h2><p>Add a task above to get started.</p></div>
-</main>
-<footer>TaskFlow • Data is saved automatically in your browser</footer>
-<script src="script.js"></script>
+    <main id="content" class="content">
+      <div id="statusBox" class="status-box hidden"></div>
+
+      <div id="loader" class="loader hidden">
+        <div class="spinner"></div>
+        <span>Fetching live weather data…</span>
+      </div>
+
+      <section id="weatherCard" class="weather-card hidden">
+        <div class="weather-card-top">
+          <div>
+            <h2 id="cityName">--</h2>
+            <p id="cityMeta" class="muted">--</p>
+            <p id="localTime" class="muted"></p>
+          </div>
+          <div class="weather-icon" id="weatherIcon">☀️</div>
+        </div>
+
+        <div class="temp-row">
+          <span id="temperature" class="temperature">--°</span>
+          <span id="condition" class="condition">--</span>
+        </div>
+        <p id="feelsLike" class="muted">Feels like --°</p>
+
+        <div class="metrics-grid">
+          <div class="metric">
+            <span class="metric-label">Humidity</span>
+            <span id="humidity" class="metric-value">--%</span>
+          </div>
+          <div class="metric">
+            <span class="metric-label">Wind Speed</span>
+            <span id="windSpeed" class="metric-value">-- km/h</span>
+          </div>
+          <div class="metric">
+            <span class="metric-label">Wind Direction</span>
+            <span id="windDir" class="metric-value">--°</span>
+          </div>
+          <div class="metric">
+            <span class="metric-label">Pressure</span>
+            <span id="pressure" class="metric-value">-- hPa</span>
+          </div>
+          <div class="metric">
+            <span class="metric-label">Cloud Cover</span>
+            <span id="cloudCover" class="metric-value">--%</span>
+          </div>
+          <div class="metric">
+            <span class="metric-label">Precipitation</span>
+            <span id="precip" class="metric-value">-- mm</span>
+          </div>
+        </div>
+
+        <h3 class="forecast-title">Next 5 Days</h3>
+        <div id="forecastRow" class="forecast-row"></div>
+      </section>
+
+      <div id="emptyState" class="empty-state">
+        <p>🔍 Search for a city above to see live weather metrics.</p>
+      </div>
+    </main>
+
+    <footer class="app-footer">
+      <p>Data: Open-Meteo &amp; Open-Meteo Geocoding APIs (no key required)</p>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
 </body>
 </html>
